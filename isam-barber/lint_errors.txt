@@ -1,0 +1,41 @@
+﻿
+> react_repo@0.0.0 lint
+> pnpm install --prefer-offline && eslint .
+
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Ôò¡ Warning ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔò«
+Ôöé                    Ôöé
+Ôöé   Ignored build    Ôöé
+Ôöé   scripts:         Ôöé
+Ôöé   esbuild.         Ôöé
+Ôöé   Run "pnpm appr   Ôöé
+Ôöé   ove-builds" to   Ôöé
+Ôöé   pick which       Ôöé
+Ôöé   dependencies     Ôöé
+Ôöé   should be        Ôöé
+Ôöé   allowed to run   Ôöé
+Ôöé   scripts.         Ôöé
+Ôöé                    Ôöé
+Ôò░ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔò»
+
+Done in 1.6s using pnpm v10.23.0
+
+C:\Users\PC\Downloads\package (2)\isam-barber\src\components\AdminPanel.tsx
+   39:6   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array                 react-hooks/exhaustive-deps
+   47:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+   52:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+   56:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+   60:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+   64:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+   68:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+   72:11  error    Unexpected lexical declaration in case block                                                                                 no-case-declarations
+  616:33  error    React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  617:31  error    React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+
+C:\Users\PC\Downloads\package (2)\isam-barber\src\contexts\AuthContext.tsx
+  78:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+Ô£û 11 problems (9 errors, 2 warnings)
+

@@ -1,0 +1,23 @@
+﻿
+> react_repo@0.0.0 lint
+> pnpm install --prefer-offline && eslint .
+
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Ôò¡ Warning ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔò«
+Ôöé                    Ôöé
+Ôöé   Ignored build    Ôöé
+Ôöé   scripts:         Ôöé
+Ôöé   esbuild.         Ôöé
+Ôöé   Run "pnpm appr   Ôöé
+Ôöé   ove-builds" to   Ôöé
+Ôöé   pick which       Ôöé
+Ôöé   dependencies     Ôöé
+Ôöé   should be        Ôöé
+Ôöé   allowed to run   Ôöé
+Ôöé   scripts.         Ôöé
+Ôöé                    Ôöé
+Ôò░ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔò»
+
+Done in 1.6s using pnpm v10.23.0

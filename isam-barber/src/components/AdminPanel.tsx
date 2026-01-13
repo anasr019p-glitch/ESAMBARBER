@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   X, LogOut, Image, Scissors, Calendar, Plus, Trash2, Edit2, Check,
   Users, ShoppingBag, MessageSquare, Package, Settings as SettingsIcon,
@@ -34,51 +34,58 @@ export default function AdminPanel({ onClose }: Props) {
   const [reviews, setReviews] = useState<Review[]>([])
   const [settings, setSettings] = useState<Settings | null>(null)
 
-  useEffect(() => {
-    fetchData()
-  }, [tab])
-
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     try {
       switch (tab) {
         case 'bookings':
-        case 'today':
+        case 'today': {
           const { data: bData } = await supabase.from('bookings').select('*').order('booking_date', { ascending: false })
           setBookings(bData || [])
           break
+        }
         case 'hours':
-        case 'staff':
+        case 'staff': {
           const { data: sData } = await supabase.from('staff').select('*')
           setStaff(sData || [])
           break
-        case 'shop':
+        }
+        case 'shop': {
           const { data: pData } = await supabase.from('products').select('*')
           setProducts(pData || [])
           break
-        case 'gallery':
+        }
+        case 'gallery': {
           const { data: gData } = await supabase.from('gallery').select('*').order('sort_order')
           setGallery(gData || [])
           break
-        case 'orders':
+        }
+        case 'orders': {
           const { data: oData } = await supabase.from('orders').select('*').order('created_at', { ascending: false })
           setOrders(oData || [])
           break
-        case 'reviews':
+        }
+        case 'reviews': {
           const { data: rData } = await supabase.from('reviews').select('*').order('created_at', { ascending: false })
           setReviews(rData || [])
           break
-        case 'settings':
+        }
+        case 'settings': {
           const { data: setRes } = await supabase.from('settings').select('*').single()
           setSettings(setRes)
           break
+        }
       }
     } catch (err) {
       console.error(err)
     } finally {
       setLoading(false)
     }
-  }
+  }, [tab])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const showNotification = (msg: string) => {
     setStatus(msg)
@@ -606,15 +613,15 @@ function BookingsList({ bookings, onUpdate }: { bookings: Booking[], onUpdate: (
 }
 
 function SettingsSection({ settings, onUpdate }: { settings: Settings | null, onUpdate: () => void }) {
+  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<string | null>(null)
+
   if (!settings) return (
     <div className="flex flex-col items-center justify-center py-20">
       <RefreshCw className="w-8 h-8 text-[#D4AF37] animate-spin mb-4" />
       <p className="text-gray-400">Caricamento impostazioni...</p>
     </div>
   )
-
-  const [loading, setLoading] = useState(false)
-  const [status, setStatus] = useState<string | null>(null)
 
   const toggleShop = async () => {
     const { error } = await supabase
