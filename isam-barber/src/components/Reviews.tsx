@@ -29,20 +29,26 @@ export default function Reviews() {
         setLoading(false)
     }
 
+    const [error, setError] = useState<string | null>(null)
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
+        setError(null)
 
-        const { error } = await supabase
+        const { error: submitError } = await supabase
             .from('reviews')
             .insert([{
                 ...newReview,
                 status: 'pending' // Default status
             }])
 
-        if (!error) {
+        if (!submitError) {
             setSubmitted(true)
             setNewReview({ customer_name: '', rating: 5, comment: '' })
+        } else {
+            console.error('Review submission error:', submitError)
+            setError('Errore nell\'invio della recensione. Riprova più tardi.')
         }
         setIsSubmitting(false)
     }
@@ -120,6 +126,11 @@ export default function Reviews() {
                                             className="w-full h-32 bg-black/40 light:bg-white"
                                         />
                                     </div>
+                                    {error && (
+                                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-xs animate-shake">
+                                            {error}
+                                        </div>
+                                    )}
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}

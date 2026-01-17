@@ -1,4 +1,4 @@
-ISTRUZIONI MANUALI (Se lo script automatico fallisce)
+ISTRUZIONI MANUALI DEFINITIVE (CORRETTE E COMPLETE)
 
 1. Vai sul sito: https://supabase.com/dashboard/project/vpgzwgsagywasrxcracc/sql
 2. Clicca su "New query" (in alto a sinistra).
@@ -7,6 +7,22 @@ ISTRUZIONI MANUALI (Se lo script automatico fallisce)
 
 --- CODICE DA COPIARE ---
 
+-- 1. CREAZIONE BUCKET PER CARICAMENTO IMMAGINI
+INSERT INTO storage.buckets (id, name, public)
+VALUES 
+  ('gallery', 'gallery', true),
+  ('products', 'products', true),
+  ('staff', 'staff', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- 2. PERMESSI STORAGE (RLS)
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+CREATE POLICY "Public Access"
+ON storage.objects FOR ALL
+USING ( bucket_id IN ('gallery', 'products', 'staff') )
+WITH CHECK ( bucket_id IN ('gallery', 'products', 'staff') );
+
+-- 3. INIZIALIZZAZIONE TABELLE
 create extension if not exists "pgcrypto";
 
 create table if not exists services (
@@ -62,47 +78,39 @@ create table if not exists products (
   is_active boolean default true
 );
 
-create table if not exists orders (
-  id uuid default gen_random_uuid() primary key,
-  customer_name text not null,
-  total_amount numeric not null,
-  status text default 'pending',
-  created_at timestamp with time zone default now()
-);
-
-create table if not exists reviews (
-  id uuid default gen_random_uuid() primary key,
-  customer_name text not null,
-  rating integer not null check (rating >= 1 and rating <= 5),
-  comment text,
-  status text default 'pending',
-  created_at timestamp with time zone default now()
-);
-
 create table if not exists settings (
   id uuid default gen_random_uuid() primary key,
   is_shop_open boolean default true,
   announcement text
 );
 
-alter table services enable row level security;
-alter table bookings enable row level security;
-alter table gallery enable row level security;
-alter table staff enable row level security;
-alter table products enable row level security;
-alter table orders enable row level security;
-alter table reviews enable row level security;
-alter table settings enable row level security;
+-- 4. PERMESSI UNIVERSALI (RLS)
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
+ALTER TABLE staff ENABLE ROW LEVEL SECURITY;
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
-create policy "Public services" on services for all using (true) with check (true);
-create policy "Public bookings" on bookings for all using (true) with check (true);
-create policy "Public gallery" on gallery for all using (true) with check (true);
-create policy "Public staff" on staff for all using (true) with check (true);
-create policy "Public products" on products for all using (true) with check (true);
-create policy "Public settings" on settings for all using (true) with check (true);
-create policy "Public reviews" on reviews for all using (true) with check (true);
-create policy "Public orders" on orders for all using (true) with check (true);
+DO $$
+DECLARE
+    t text;
+BEGIN
+    FOR t IN SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' 
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS "Universal Access" ON public.%I', t);
+        EXECUTE format('CREATE POLICY "Universal Access" ON public.%I FOR ALL USING (true) WITH CHECK (true)', t);
+    END LOOP;
+END $$;
 
-insert into settings (is_shop_open, announcement) 
-select true, 'Benvenuti'
-where not exists (select 1 from settings);
+-- 5. DATI DI DEFAULT
+INSERT INTO public.services (name, description, price, category, is_active, sort_order)
+VALUES 
+  ('Taglio Capelli', 'Taglio classico o moderno', 20, 'Capelli', true, 1),
+  ('Taglio Barba', 'Regolazione barba con panno caldo', 15, 'Barba', true, 2)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO settings (is_shop_open, announcement) 
+SELECT true, 'Benvenuti'
+WHERE NOT EXISTS (SELECT 1 FROM settings);

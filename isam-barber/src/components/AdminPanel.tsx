@@ -618,8 +618,17 @@ function SettingsSection({ settings, onUpdate }: { settings: Settings | null, on
 
   if (!settings) return (
     <div className="flex flex-col items-center justify-center py-20">
-      <RefreshCw className="w-8 h-8 text-[#D4AF37] animate-spin mb-4" />
-      <p className="text-gray-400">Caricamento impostazioni...</p>
+      <AlertCircle className="w-8 h-8 text-red-500 mb-4" />
+      <p className="text-gray-400 mb-4">Impostazioni non trovate nel database.</p>
+      <button
+        onClick={async () => {
+          const { error } = await supabase.from('settings').insert([{ is_shop_open: true, announcement: 'Benvenuti!' }]);
+          if (!error) onUpdate();
+        }}
+        className="btn-gold px-6 py-2 rounded-lg"
+      >
+        Inizializza Impostazioni
+      </button>
     </div>
   )
 
@@ -884,7 +893,7 @@ function GallerySection({ gallery, onUpdate }: { gallery: GalleryItem[], onUpdat
   const [newItem, setNewItem] = useState({
     title: '',
     media_url: '',
-    media_type: 'photo' as 'photo' | 'video',
+    media_type: 'image' as 'image' | 'video',
     is_active: true,
     sort_order: 0
   })
@@ -897,7 +906,7 @@ function GallerySection({ gallery, onUpdate }: { gallery: GalleryItem[], onUpdat
       setNewItem({
         title: '',
         media_url: '',
-        media_type: 'photo',
+        media_type: 'image',
         is_active: true,
         sort_order: 0
       })
@@ -934,9 +943,9 @@ function GallerySection({ gallery, onUpdate }: { gallery: GalleryItem[], onUpdat
             <select
               className="bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white outline-none focus:border-[#D4AF37]"
               value={newItem.media_type}
-              onChange={e => setNewItem({ ...newItem, media_type: e.target.value as 'photo' | 'video' })}
+              onChange={e => setNewItem({ ...newItem, media_type: e.target.value as 'image' | 'video' })}
             >
-              <option value="photo" className="bg-black">Foto</option>
+              <option value="image" className="bg-black">Immagine</option>
               <option value="video" className="bg-black">Video</option>
             </select>
             <div className="flex flex-col gap-2">

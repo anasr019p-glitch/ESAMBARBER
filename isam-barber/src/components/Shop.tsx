@@ -15,16 +15,11 @@ export default function Shop() {
                 .select('*')
                 .eq('is_active', true)
 
-            if (!error && data && data.length > 0) {
+            if (!error && data) {
                 setProducts(data)
             } else {
-                // Add some professional mock products if DB is empty or for consistent demo
-                setProducts([
-                    { id: '1', name: 'Premium Hair Wax', description: 'Tenuta forte e finitura opaca naturale.', price: 18, image_url: '/images/product_1.png', is_active: true },
-                    { id: '2', name: 'Beard Oil Luxury', description: 'Idrata e ammorbisce la barba con oli essenziali.', price: 24, image_url: '/images/product_2.png', is_active: true },
-                    { id: '3', name: 'Professional Comb', description: 'Pettine in fibra di carbonio antistatico.', price: 12, image_url: '/images/product_3.png', is_active: true },
-                    { id: '4', name: 'Aftershave Balm', description: 'Lenitivo e rinfrescante post-rasatura.', price: 20, image_url: 'https://images.unsplash.com/photo-1621607512214-68297480165e?w=400', is_active: true },
-                ] as any)
+                setProducts([])
+                if (error) console.error('Error fetching products:', error)
             }
             setLoading(false)
         }
